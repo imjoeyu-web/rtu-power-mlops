@@ -14,22 +14,38 @@
 - **이상탐지**: Rolling Z-score + Isolation Forest 이중 탐지
 - **실험 추적**: MLflow로 파라미터/메트릭 자동 기록
 - **대시보드**: Streamlit 기반 실시간 모니터링
-- **자동화**: GitHub Actions CI/CD 파이프라인
+- **컨테이너화**: Docker로 환경 패키징
+- **데이터 스토리지**: GCP Cloud Storage(GCS) 연동
+- **자동화**: GitHub Actions CI/CD + GCP Workload Identity Federation 인증
+
+## 아키텍처
+
+```
+GCS (데이터 스토리지)
+    ↓
+GitHub Actions (CI/CD 자동 트리거)
+    ↓
+파이프라인 실행 (preprocess → model → anomaly)
+    ↓
+MLflow (실험 추적)
+    ↓
+Streamlit 대시보드
+```
 
 ## 프로젝트 구조
 
 ```
 rtu-power-mlops/
 ├── src/
-│   ├── preprocess.py   # 데이터 로드 & hourly 집계
+│   ├── preprocess.py   # 데이터 로드 & hourly 집계 (GCS/로컬 모두 지원)
 │   ├── model.py        # LightGBM 학습 & 재귀 예측
 │   ├── anomaly.py      # 이상탐지 (Z-score, Isolation Forest)
-│   └── pipeline.py     # 전체 파이프라인 실행
+│   └── pipeline.py     # 전체 파이프라인 실행 + MLflow 연동
 ├── dashboard/
 │   └── app.py          # Streamlit 대시보드
 ├── notebooks/
-│   ├── eda_rtu.ipynb   # 탐색적 데이터 분석
-│   └── modeling_rtu.ipynb  # 모델링 실험
+│   ├── eda_rtu.ipynb        # 탐색적 데이터 분석
+│   └── modeling_rtu.ipynb   # 모델링 실험
 ├── data/               # 데이터 (gitignore)
 ├── output/             # 결과물 (gitignore)
 ├── Dockerfile
@@ -44,6 +60,7 @@ rtu-power-mlops/
 - **크기**: 33,696,013행 × 19컬럼
 - **설비**: 13개 모듈 (분쇄기, 호기, 분전반 등)
 - **수집 주기**: 5초
+- **스토리지**: GCP Cloud Storage (gs://rtu-power-data/)
 
 ## EDA 주요 인사이트
 
@@ -67,8 +84,11 @@ rtu-power-mlops/
 ### 로컬 실행
 
 ```bash
-# 파이프라인 실행
+# 파이프라인 실행 (로컬 데이터)
 python -m src.pipeline
+
+# GCS 데이터로 실행
+python -m src.pipeline  # pipeline.py의 기본 경로가 GCS로 설정됨
 
 # MLflow 대시보드
 mlflow ui
@@ -94,6 +114,11 @@ docker run -p 8501:8501 \
 # http://localhost:8501
 ```
 
+### CI/CD (GitHub Actions)
+
+main 브랜치에 push 또는 매일 자정에 자동 실행됩니다.
+GCP Workload Identity Federation으로 서비스 계정 키 없이 GCS 인증합니다.
+
 ## 결과
 
 | 항목 | 값 |
@@ -114,5 +139,13 @@ docker run -p 8501:8501 \
 | 실험 추적 | MLflow |
 | 대시보드 | Streamlit |
 | 컨테이너 | Docker |
+| 데이터 스토리지 | GCP Cloud Storage |
 | CI/CD | GitHub Actions |
+| GCP 인증 | Workload Identity Federation |
 | 언어 | Python 3.11 |
+
+## TODO
+
+- [ ] 모델 고도화 (Optuna 하이퍼파라미터 튜닝, 앙상블)
+- [ ] 이상탐지 설비별 세분화
+- [ ] GCP Vertex AI 연동으로 클라우드 실행 환경 전환
