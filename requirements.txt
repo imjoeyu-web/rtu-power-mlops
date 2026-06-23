@@ -7,3 +7,4 @@ streamlit
 matplotlib
 seaborn
 statsmodels
+google-cloud-storage
