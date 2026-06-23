@@ -1,0 +1,35 @@
+name: RTU 전력 예측 파이프라인
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # 매일 자정 자동 실행
+  workflow_dispatch:       # 수동 실행 버튼
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+
+      - name: Python 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 라이브러리 설치
+        run: pip install -r requirements.txt
+
+      - name: 파이프라인 실행
+        run: python -m src.pipeline
+
+      - name: 결과 파일 업로드
+        uses: actions/upload-artifact@v3
+        with:
+          name: pipeline-output
+          path: |
+            output/submission.csv
+            output/anomaly_result.csv
