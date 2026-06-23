@@ -1,0 +1,6 @@
+﻿data/
+output/
+mlruns/
+__pycache__/
+*.csv
+*.png
