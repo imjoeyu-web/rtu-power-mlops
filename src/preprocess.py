@@ -5,8 +5,20 @@ import numpy as np
 def load_and_aggregate(filepath: str) -> pd.DataFrame:
     """
     CSV 로드 → 설비별 1시간 평균 → 전체 합산 → hourly_pow 생성
+    GCS 경로(gs://) 또는 로컬 경로 모두 지원
     """
-    df = pd.read_csv(filepath)
+    if filepath.startswith('gs://'):
+        from google.cloud import storage
+        import io
+        client = storage.Client()
+        bucket_name = filepath.split('/')[2]
+        blob_path = '/'.join(filepath.split('/')[3:])
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(blob_path)
+        df = pd.read_csv(io.BytesIO(blob.download_as_bytes()))
+    else:
+        df = pd.read_csv(filepath)
+
     df['dt'] = pd.to_datetime(df['localtime'], format='%Y%m%d%H%M%S')
 
     hourly = (
