@@ -2,6 +2,9 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# 한글 폰트 설치
+RUN apt-get update && apt-get install -y fonts-nanum && fc-cache -fv
+
 # 의존성 설치
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -13,8 +16,6 @@ COPY dashboard/ ./dashboard/
 # 데이터, 아웃풋 폴더 생성
 RUN mkdir -p data output mlruns
 
-# 포트 설정 (Streamlit)
 EXPOSE 8501
 
-# 실행 명령
 CMD ["streamlit", "run", "dashboard/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

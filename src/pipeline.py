@@ -10,7 +10,7 @@ from src.preprocess import load_and_aggregate, make_features
 from src.model import train_model, recursive_predict, make_submission
 from src.anomaly import detect_zscore, detect_isolation_forest, get_anomaly_summary
 
-def run_pipeline(data_path: str = 'gs://rtu-power-data/rtu_data_full.csv',
+def run_pipeline(data_path: str = 'gs://rtu-power-data/rtu_sample_pipeline.csv',
                  output_path: str = 'output/submission.csv'):
 
     print('=' * 50)
