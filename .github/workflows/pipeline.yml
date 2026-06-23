@@ -27,7 +27,7 @@ jobs:
         run: python -m src.pipeline
 
       - name: 결과 파일 업로드
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pipeline-output
           path: |
