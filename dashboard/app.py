@@ -11,7 +11,7 @@ import sys
 import os
 
 # 한글 폰트
-matplotlib.rcParams['font.family'] = 'Malgun Gothic'
+matplotlib.rcParams['font.family'] = 'NanumGothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 # src 경로 추가
