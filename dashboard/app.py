@@ -144,7 +144,7 @@ if not equip_anomaly.empty:
             hide_index=True
         )
 
-        selected = st.selectbox('설비 선택', equip_summary['equipment'].tolist())
+        selected = st.selectbox("설비 선택", equip_summary["equipment"].tolist())
         if selected:
             sel_data = equip_anomaly[equip_anomaly['equipment'] == selected]
             fig6, ax6 = plt.subplots(figsize=(7, 3))
