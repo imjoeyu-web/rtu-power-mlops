@@ -114,11 +114,13 @@ st.subheader('🔧 설비별 이상탐지 현황')
 
 if not equip_anomaly.empty:
     equip_summary = (
-        equip_anomaly.groupby('equipment')
+        equip_anomaly[equip_anomaly['zscore_anomaly'] == True]
+        .groupby('equipment')
         .size()
         .reset_index(name='anomaly_count')
         .sort_values('anomaly_count', ascending=False)
     )
+
 
     col_c, col_d = st.columns([1, 1])
 
