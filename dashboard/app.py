@@ -30,7 +30,8 @@ def load_anomaly():
 def load_equip_anomaly():
     path = 'output/anomaly_per_equipment.csv'
     if os.path.exists(path):
-        return pd.read_csv(path, parse_dates=['dt'])
+        df = pd.read_csv(path, parse_dates=['dt'])
+        return df[df['dt'] < '2025-05-01']  # 5월 이후 제거
     return pd.DataFrame()
 
 
