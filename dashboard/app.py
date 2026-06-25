@@ -146,10 +146,13 @@ if not equip_anomaly.empty:
 
         selected = st.selectbox("설비 선택", equip_summary["equipment"].tolist())
         if selected:
-            sel_data = equip_anomaly[equip_anomaly['equipment'] == selected]
+            sel_all  = equip_anomaly[equip_anomaly['equipment'] == selected].sort_values('dt')
+            sel_anom = sel_all[sel_all['zscore_anomaly'] == True]
             fig6, ax6 = plt.subplots(figsize=(7, 3))
-            ax6.scatter(sel_data['dt'], sel_data['hourly_pow'],
-                        color='red', s=20, zorder=5, label=f'Anomaly ({len(sel_data)})')
+            ax6.plot(sel_all['dt'], sel_all['hourly_pow'],
+                    color='steelblue', linewidth=0.5, label=selected)
+            ax6.scatter(sel_anom['dt'], sel_anom['hourly_pow'],
+                        color='red', s=20, zorder=5, label=f'Anomaly ({len(sel_anom)})')
             ax6.legend(fontsize=8)
             ax6.grid(True, alpha=0.3)
             st.pyplot(fig6)
