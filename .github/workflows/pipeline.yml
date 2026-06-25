@@ -33,6 +33,9 @@ jobs:
       - name: 라이브러리 설치
         run: pip install -r requirements.txt
 
+      - name: output 폴더 생성
+        run: mkdir -p output
+
       - name: 파이프라인 실행
         run: python -m src.pipeline
 

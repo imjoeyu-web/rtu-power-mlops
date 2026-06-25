@@ -4,3 +4,6 @@ mlruns/
 __pycache__/
 *.csv
 *.png
+!output/submission.csv
+!output/anomaly_result.csv
+!output/anomaly_per_equipment.csv
