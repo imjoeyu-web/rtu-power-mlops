@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import os
 
-matplotlib.rcParams['font.family'] = 'DejaVu Sans'
+matplotlib.rcParams['font.family'] = 'NanumGothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 st.set_page_config(
