@@ -5,9 +5,14 @@ import matplotlib.pyplot as plt
 import matplotlib
 import os
 import matplotlib.font_manager as fm
+import glob
 
-fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
-matplotlib.rcParams['font.family'] = 'NanumGothic'
+nanum_paths = glob.glob('/usr/share/fonts/**/Nanum*.ttf', recursive=True)
+if nanum_paths:
+    fm.fontManager.addfont(nanum_paths[0])
+    matplotlib.rcParams['font.family'] = 'NanumGothic'
+else:
+    matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 st.set_page_config(
