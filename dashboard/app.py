@@ -10,7 +10,8 @@ import glob
 nanum_paths = glob.glob('/usr/share/fonts/**/Nanum*.ttf', recursive=True)
 if nanum_paths:
     fm.fontManager.addfont(nanum_paths[0])
-    matplotlib.rcParams['font.family'] = 'NanumGothic'
+    prop = fm.FontProperties(fname=nanum_paths[0])
+    matplotlib.rcParams['font.family'] = prop.get_name()
 else:
     matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 matplotlib.rcParams['axes.unicode_minus'] = False
