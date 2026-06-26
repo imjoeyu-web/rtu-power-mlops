@@ -5,13 +5,15 @@ import matplotlib.pyplot as plt
 import matplotlib
 import os
 import matplotlib.font_manager as fm
-import glob
 
-nanum_paths = glob.glob('/usr/share/fonts/**/Nanum*.ttf', recursive=True)
-if nanum_paths:
-    fm.fontManager.addfont(nanum_paths[0])
-    prop = fm.FontProperties(fname=nanum_paths[0])
-    matplotlib.rcParams['font.family'] = prop.get_name()
+nanum_font = None
+for font in fm.fontManager.ttflist:
+    if 'Nanum' in font.name:
+        nanum_font = font.name
+        break
+
+if nanum_font:
+    matplotlib.rcParams['font.family'] = nanum_font
 else:
     matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 matplotlib.rcParams['axes.unicode_minus'] = False
@@ -134,18 +136,28 @@ if not equip_anomaly.empty:
     col_c, col_d = st.columns([1, 1])
 
     with col_c:
+        with col_c:
         st.markdown('**설비별 이상 건수 (두 방법 교집합)**')
-        fig5, ax5 = plt.subplots(figsize=(7, 4))
-        colors = ['crimson' if v == equip_summary['anomaly_count'].max()
-                  else 'steelblue' for v in equip_summary['anomaly_count']]
-        ax5.barh(equip_summary['equipment'], equip_summary['anomaly_count'], color=colors)
-        ax5.set_xlabel('Anomaly Count')
-        ax5.invert_yaxis()
-        ax5.grid(True, alpha=0.3, axis='x')
-        for i, v in enumerate(equip_summary['anomaly_count']):
-            ax5.text(v + 0.1, i, str(v), va='center', fontsize=9)
-        st.pyplot(fig5)
-        plt.close()
+        fig5 = px.bar(
+            equip_summary,
+            x='anomaly_count',
+            y='equipment',
+            orientation='h',
+            color=equip_summary['anomaly_count'].apply(
+                lambda x: 'max' if x == equip_summary['anomaly_count'].max() else 'normal'
+            ),
+            color_discrete_map={'max': 'crimson', 'normal': 'steelblue'},
+            text='anomaly_count'
+        )
+        fig5.update_layout(
+            showlegend=False,
+            xaxis_title='이상 건수',
+            yaxis_title='',
+            yaxis=dict(autorange='reversed'),
+            height=400
+        )
+        fig5.update_traces(textposition='outside')
+        st.plotly_chart(fig5, use_container_width=True)
 
     with col_d:
         st.markdown('**설비별 이상탐지 상세**')
