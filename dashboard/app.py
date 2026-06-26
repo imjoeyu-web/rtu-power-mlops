@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib
 import os
 import matplotlib.font_manager as fm
+import plotly.express as px
+
 
 nanum_font = None
 for font in fm.fontManager.ttflist:
