@@ -99,8 +99,12 @@ with col_a:
     fig2, ax2 = plt.subplots(figsize=(7, 3))
     ax2.plot(anomaly['dt'], anomaly['hourly_pow'],
              color='steelblue', linewidth=0.5, label='hourly_pow')
-    ax2.scatter(zscore_anomalies['dt'], zscore_anomalies['hourly_pow'],
-                color='red', s=15, zorder=5, label=f'Anomaly ({len(zscore_anomalies)})')
+    surge = zscore_anomalies[zscore_anomalies['z_score'] > 0]
+    drop  = zscore_anomalies[zscore_anomalies['z_score'] < 0]
+    ax2.scatter(surge['dt'], surge['hourly_pow'],
+            color='red', s=15, zorder=5, label=f'급등 ({len(surge)}건)')
+    ax2.scatter(drop['dt'], drop['hourly_pow'],
+            color='blue', s=15, zorder=5, label=f'급락 ({len(drop)}건)')
     ax2.legend(fontsize=8)
     ax2.grid(True, alpha=0.3)
     st.pyplot(fig2)
