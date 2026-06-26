@@ -4,7 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import os
+import matplotlib.font_manager as fm
 
+fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
 matplotlib.rcParams['font.family'] = 'NanumGothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
 

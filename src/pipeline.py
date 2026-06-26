@@ -51,7 +51,7 @@ def run_pipeline(data_path='gs://rtu-power-data/rtu_sample_pipeline.csv',
     hourly[['dt', 'hourly_pow', 'z_score', 'zscore_anomaly', 'iso_anomaly']].to_csv(anomaly_path, index=False)
 
     equip_anomaly_path = output_path.replace('submission.csv', 'anomaly_per_equipment.csv')
-    equip_summary.to_csv(equip_anomaly_path, index=False)
+    equip_zscore.to_csv(equip_anomaly_path, index=False)
 
     print('done!')
     return {'hourly': hourly, 'hourly_equip': hourly_equip, 'model': model,
