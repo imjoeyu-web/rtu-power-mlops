@@ -136,7 +136,6 @@ if not equip_anomaly.empty:
     col_c, col_d = st.columns([1, 1])
 
     with col_c:
-        with col_c:
         st.markdown('**설비별 이상 건수 (두 방법 교집합)**')
         fig5 = px.bar(
             equip_summary,
