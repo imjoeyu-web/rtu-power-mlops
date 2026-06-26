@@ -174,7 +174,7 @@ if not equip_anomaly.empty:
             sel_anom = sel_all[sel_all['zscore_anomaly'] == True]
             fig6, ax6 = plt.subplots(figsize=(7, 3))
             ax6.plot(sel_all['dt'], sel_all['hourly_pow'],
-                    color='steelblue', linewidth=0.5, label=selected)
+            color='steelblue', linewidth=0.5, label='Equipment')
             ax6.scatter(sel_anom['dt'], sel_anom['hourly_pow'],
                         color='red', s=20, zorder=5, label=f'Anomaly ({len(sel_anom)})')
             ax6.legend(fontsize=8)
