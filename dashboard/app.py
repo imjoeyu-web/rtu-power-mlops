@@ -140,7 +140,7 @@ if not equip_anomaly.empty:
     )
 
 
-    col_c, col_d = st.columns([6, 4])
+    col_c, col_d = st.columns([5, 5])
 
     with col_c:
         st.markdown('**설비별 이상 건수**')
@@ -156,7 +156,7 @@ if not equip_anomaly.empty:
             text='anomaly_count'
         )
         fig5.update_layout(
-            showlegend=False,
+            margin=dict(t=10, b=40),
             xaxis_title='이상 건수',
             yaxis_title='',
             yaxis=dict(autorange='reversed'),
