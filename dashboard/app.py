@@ -128,10 +128,7 @@ st.markdown('---')
 
 # 설비별 이상탐지
 st.subheader('🔧 설비별 이상탐지 현황')
-st.markdown("""
-위의 전체 합산 이상탐지에서 **Rolling Z-score와 Isolation Forest 두 방법이 동시에 감지한 교집합 이상 케이스만** 추려
-설비별로 세분화한 결과입니다. 좌측 바차트의 막대를 클릭하면 우측에서 해당 설비의 시간별 전력 추이와 이상 시점을 확인하실 수 있습니다.
-""")
+st.caption('두 이상탐지 방법(Z-score · Isolation Forest)이 동시에 감지한 교집합만 표시 · 좌측 막대 클릭 시 우측 타임라인 연동')
 
 if not equip_anomaly.empty:
     equip_summary = (
@@ -147,7 +144,6 @@ if not equip_anomaly.empty:
 
     with col_c:
         st.markdown('**설비별 이상 건수**')
-        st.caption('Rolling Z-score + Isolation Forest 교집합 기준 · 클릭하면 우측 타임라인 연동')
         fig5 = px.bar(
             equip_summary,
             x='anomaly_count',
@@ -170,14 +166,12 @@ if not equip_anomaly.empty:
         selected_event = st.plotly_chart(fig5, use_container_width=True, on_select='rerun', key='equip_bar')
 
     with col_d:
-        st.markdown('**설비별 이상탐지 상세**')
 
         clicked = None
         if selected_event and selected_event.selection and selected_event.selection.points:
             clicked = selected_event.selection.points[0]['y']
 
         selected = clicked if clicked else equip_summary['equipment'].iloc[0]
-        st.caption(f'선택된 설비: **{selected}**')
 
         sel_all  = equip_anomaly[equip_anomaly['equipment'] == selected].sort_values('dt')
         sel_anom = sel_all[sel_all['zscore_anomaly'] == True]
@@ -192,7 +186,7 @@ if not equip_anomaly.empty:
         fig6.update_layout(
             showlegend=True,
             height=350,
-            title=f'{selected} 타임라인',
+            title=f'{selected} · 시간별 전력 추이 및 이상 시점,
             legend=dict(orientation='h', y=1.1)
         )
         st.plotly_chart(fig6, use_container_width=True)
