@@ -109,8 +109,9 @@ with col_a:
     fig2.add_scatter(x=drop['dt'], y=drop['hourly_pow'],
                      mode='markers', marker=dict(color='navy', size=5),
                      name=f'급락 ({len(drop)}건)')
-    fig2.update_layout(showlegend=True, height=300, margin=dict(t=10, b=10))
+    fig2.update_layout(showlegend=False, height=300, margin=dict(t=10, b=10))
     st.plotly_chart(fig2, use_container_width=True)
+    st.caption(f'급등 {len(surge)}건 · 급락 {len(drop)}건')
 
 with col_b:
     st.markdown('**Isolation Forest**')
@@ -129,7 +130,9 @@ with col_b:
                      mode='markers', marker=dict(color='navy', size=5),
                      name=f'급락 ({len(iso_drop)}건)')
     fig3.update_layout(showlegend=True, height=300, margin=dict(t=10, b=10))
+    fig3.update_layout(showlegend=False, height=300, margin=dict(t=10, b=10))
     st.plotly_chart(fig3, use_container_width=True)
+    st.caption(f'급등 {len(iso_surge)}건 · 급락 {len(iso_drop)}건')
 
 st.markdown('---')
 
