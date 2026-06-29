@@ -140,7 +140,7 @@ if not equip_anomaly.empty:
     )
 
 
-    col_c, col_d = st.columns([1, 1])
+    col_c, col_d = st.columns([6, 4])
 
     with col_c:
         st.markdown('**설비별 이상 건수**')
@@ -185,7 +185,7 @@ if not equip_anomaly.empty:
                          name=f'이상 ({len(sel_anom)}건)')
         fig6.update_layout(
             showlegend=True,
-            height=350,
+            height=400,
             title=f'{selected} · 시간별 전력 추이 및 이상 시점',
             legend=dict(orientation='h', y=1.1)
         )
