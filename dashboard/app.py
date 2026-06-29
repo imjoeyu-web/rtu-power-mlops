@@ -96,43 +96,47 @@ col_a, col_b = st.columns(2)
 with col_a:
     st.markdown('**Rolling Z-score**')
     zscore_anomalies = anomaly[anomaly['zscore_anomaly'] == True]
-    fig2, ax2 = plt.subplots(figsize=(7, 3))
-    ax2.plot(anomaly['dt'], anomaly['hourly_pow'],
-             color='steelblue', linewidth=0.5, label='hourly_pow')
     surge = zscore_anomalies[zscore_anomalies['z_score'] > 0]
     drop  = zscore_anomalies[zscore_anomalies['z_score'] < 0]
-    ax2.scatter(surge['dt'], surge['hourly_pow'],
-            color='red', s=15, zorder=5, label=f'급등 ({len(surge)}건)')
-    ax2.scatter(drop['dt'], drop['hourly_pow'],
-            color='blue', s=15, zorder=5, label=f'급락 ({len(drop)}건)')
-    ax2.legend(fontsize=8)
-    ax2.grid(True, alpha=0.3)
-    st.pyplot(fig2)
-    plt.close()
+
+    fig2 = px.line(anomaly, x='dt', y='hourly_pow',
+                   labels={'dt': '', 'hourly_pow': '전력(kW)'},
+                   color_discrete_sequence=['steelblue'])
+    fig2.update_traces(line_width=0.5)
+    fig2.add_scatter(x=surge['dt'], y=surge['hourly_pow'],
+                     mode='markers', marker=dict(color='crimson', size=5),
+                     name=f'급등 ({len(surge)}건)')
+    fig2.add_scatter(x=drop['dt'], y=drop['hourly_pow'],
+                     mode='markers', marker=dict(color='navy', size=5),
+                     name=f'급락 ({len(drop)}건)')
+    fig2.update_layout(showlegend=True, height=300, margin=dict(t=10, b=10))
+    st.plotly_chart(fig2, use_container_width=True)
 
 with col_b:
     st.markdown('**Isolation Forest**')
     iso_anomalies = anomaly[anomaly['iso_anomaly'] == True]
     iso_surge = iso_anomalies[iso_anomalies['hourly_pow'] > anomaly['hourly_pow'].mean()]
     iso_drop  = iso_anomalies[iso_anomalies['hourly_pow'] <= anomaly['hourly_pow'].mean()]
-    fig3, ax3 = plt.subplots(figsize=(7, 3))
-    ax3.plot(anomaly['dt'], anomaly['hourly_pow'],
-             color='steelblue', linewidth=0.5, label='hourly_pow')
-    ax3.scatter(iso_surge['dt'], iso_surge['hourly_pow'],
-                color='crimson', s=15, zorder=5, label=f'급등 ({len(iso_surge)}건)')
-    ax3.scatter(iso_drop['dt'], iso_drop['hourly_pow'],
-                color='navy', s=15, zorder=5, label=f'급락 ({len(iso_drop)}건)')
-    ax3.legend(fontsize=8)
-    ax3.grid(True, alpha=0.3)
-    st.pyplot(fig3)
-    plt.close()
+
+    fig3 = px.line(anomaly, x='dt', y='hourly_pow',
+                   labels={'dt': '', 'hourly_pow': '전력(kW)'},
+                   color_discrete_sequence=['steelblue'])
+    fig3.update_traces(line_width=0.5)
+    fig3.add_scatter(x=iso_surge['dt'], y=iso_surge['hourly_pow'],
+                     mode='markers', marker=dict(color='crimson', size=5),
+                     name=f'급등 ({len(iso_surge)}건)')
+    fig3.add_scatter(x=iso_drop['dt'], y=iso_drop['hourly_pow'],
+                     mode='markers', marker=dict(color='navy', size=5),
+                     name=f'급락 ({len(iso_drop)}건)')
+    fig3.update_layout(showlegend=True, height=300, margin=dict(t=10, b=10))
+    st.plotly_chart(fig3, use_container_width=True)
 
 st.markdown('---')
 
 
 # 설비별 이상탐지
 st.subheader('🔧 설비별 이상탐지 현황')
-st.caption('두 이상탐지 방법(Z-score · Isolation Forest)이 동시에 감지한 교집합만 표시. 좌측 막대 클릭 시 우측 타임라인 연동')
+st.caption('두 이상탐지 방법(Z-score · Isolation Forest)이 동시에 감지한 교집합만 표시. 좌측 막대 클릭 시 우측 타임라인 연동.')
 
 if not equip_anomaly.empty:
     equip_summary = (
