@@ -162,31 +162,35 @@ if not equip_anomaly.empty:
             height=400
         )
         fig5.update_traces(textposition='outside')
-        st.plotly_chart(fig5, use_container_width=True)
+        selected_event = st.plotly_chart(fig5, use_container_width=True, on_select='rerun', key='equip_bar')
 
     with col_d:
         st.markdown('**설비별 이상탐지 상세**')
-        st.dataframe(
-            equip_summary.rename(columns={'equipment': '설비명', 'anomaly_count': '이상 건수'}),
-            use_container_width=True,
-            hide_index=True
-        )
 
-        selected = st.selectbox("설비 선택", equip_summary["equipment"].tolist())
-        if selected:
-            sel_all  = equip_anomaly[equip_anomaly['equipment'] == selected].sort_values('dt')
-            sel_anom = sel_all[sel_all['zscore_anomaly'] == True]
-            fig6, ax6 = plt.subplots(figsize=(7, 3))
-            ax6.plot(sel_all['dt'], sel_all['hourly_pow'],
-            color='steelblue', linewidth=0.5, label='Equipment')
-            ax6.scatter(sel_anom['dt'], sel_anom['hourly_pow'],
-                        color='red', s=20, zorder=5, label=f'Anomaly ({len(sel_anom)})')
-            ax6.legend(fontsize=8)
-            ax6.grid(True, alpha=0.3)
-            st.pyplot(fig6)
-            plt.close()
-else:
-    st.info('output/anomaly_per_equipment.csv 파일이 없어요.')
+        clicked = None
+        if selected_event and selected_event.selection and selected_event.selection.points:
+            clicked = selected_event.selection.points[0]['y']
+
+        selected = clicked if clicked else equip_summary['equipment'].iloc[0]
+        st.caption(f'선택된 설비: **{selected}**')
+
+        sel_all  = equip_anomaly[equip_anomaly['equipment'] == selected].sort_values('dt')
+        sel_anom = sel_all[sel_all['zscore_anomaly'] == True]
+
+        fig6 = px.line(sel_all, x='dt', y='hourly_pow',
+                       labels={'dt': '', 'hourly_pow': '전력(kW)'},
+                       color_discrete_sequence=['steelblue'])
+        fig6.update_traces(line_width=0.8)
+        fig6.add_scatter(x=sel_anom['dt'], y=sel_anom['hourly_pow'],
+                         mode='markers', marker=dict(color='red', size=6),
+                         name=f'이상 ({len(sel_anom)}건)')
+        fig6.update_layout(
+            showlegend=True,
+            height=350,
+            title=f'{selected} 타임라인',
+            legend=dict(orientation='h', y=1.1)
+        )
+        st.plotly_chart(fig6, use_container_width=True)
 
 st.markdown('---')
 
