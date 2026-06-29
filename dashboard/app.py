@@ -112,17 +112,16 @@ with col_a:
 
 with col_b:
     st.markdown('**Isolation Forest**')
+    iso_anomalies = anomaly[anomaly['iso_anomaly'] == True]
     iso_surge = iso_anomalies[iso_anomalies['hourly_pow'] > anomaly['hourly_pow'].mean()]
     iso_drop  = iso_anomalies[iso_anomalies['hourly_pow'] <= anomaly['hourly_pow'].mean()]
+    fig3, ax3 = plt.subplots(figsize=(7, 3))
+    ax3.plot(anomaly['dt'], anomaly['hourly_pow'],
+             color='steelblue', linewidth=0.5, label='hourly_pow')
     ax3.scatter(iso_surge['dt'], iso_surge['hourly_pow'],
                 color='crimson', s=15, zorder=5, label=f'급등 ({len(iso_surge)}건)')
     ax3.scatter(iso_drop['dt'], iso_drop['hourly_pow'],
                 color='navy', s=15, zorder=5, label=f'급락 ({len(iso_drop)}건)')
-    fig3, ax3 = plt.subplots(figsize=(7, 3))
-    ax3.plot(anomaly['dt'], anomaly['hourly_pow'],
-             color='steelblue', linewidth=0.5, label='hourly_pow')
-    ax3.scatter(iso_anomalies['dt'], iso_anomalies['hourly_pow'],
-                color='orange', s=15, zorder=5, label=f'Anomaly ({len(iso_anomalies)})')
     ax3.legend(fontsize=8)
     ax3.grid(True, alpha=0.3)
     st.pyplot(fig3)
