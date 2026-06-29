@@ -128,6 +128,10 @@ st.markdown('---')
 
 # 설비별 이상탐지
 st.subheader('🔧 설비별 이상탐지 현황')
+st.markdown("""
+위의 전체 합산 이상탐지에서 **Rolling Z-score와 Isolation Forest 두 방법이 동시에 감지한 교집합 이상 케이스만** 추려
+설비별로 세분화한 결과입니다. 좌측 바차트의 막대를 클릭하면 우측에서 해당 설비의 시간별 전력 추이와 이상 시점을 확인하실 수 있습니다.
+""")
 
 if not equip_anomaly.empty:
     equip_summary = (
@@ -142,7 +146,8 @@ if not equip_anomaly.empty:
     col_c, col_d = st.columns([1, 1])
 
     with col_c:
-        st.markdown('**설비별 이상 건수 (두 방법 교집합)**')
+        st.markdown('**설비별 이상 건수**')
+        st.caption('Rolling Z-score + Isolation Forest 교집합 기준 · 클릭하면 우측 타임라인 연동')
         fig5 = px.bar(
             equip_summary,
             x='anomaly_count',
