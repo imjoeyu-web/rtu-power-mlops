@@ -111,7 +111,6 @@ with col_a:
                      name=f'급락 ({len(drop)}건)')
     fig2.update_layout(showlegend=False, height=300, margin=dict(t=10, b=10))
     st.plotly_chart(fig2, use_container_width=True)
-    st.caption(f'급등 {len(surge)}건 · 급락 {len(drop)}건')
 
 with col_b:
     st.markdown('**Isolation Forest**')
@@ -132,8 +131,19 @@ with col_b:
     fig3.update_layout(showlegend=True, height=300, margin=dict(t=10, b=10))
     fig3.update_layout(showlegend=False, height=300, margin=dict(t=10, b=10))
     st.plotly_chart(fig3, use_container_width=True)
-    st.caption(f'급등 {len(iso_surge)}건 · 급락 {len(iso_drop)}건')
 
+# 이상탐지 요약 표
+both_surge = anomaly[(anomaly['zscore_anomaly'] == True) & (anomaly['iso_anomaly'] == True) & (anomaly['z_score'] > 0)]
+both_drop  = anomaly[(anomaly['zscore_anomaly'] == True) & (anomaly['iso_anomaly'] == True) & (anomaly['z_score'] < 0)]
+
+summary_df = pd.DataFrame({
+    '구분':             ['급등', '급락', '합계'],
+    'Z-score':         [f'{len(surge)}건', f'{len(drop)}건', f'{len(surge)+len(drop)}건'],
+    'Isolation Forest':[f'{len(iso_surge)}건', f'{len(iso_drop)}건', f'{len(iso_surge)+len(iso_drop)}건'],
+    '교집합':           [f'{len(both_surge)}건', f'{len(both_drop)}건', f'{len(both_surge)+len(both_drop)}건'],
+})
+
+st.dataframe(summary_df, use_container_width=False, hide_index=True)
 st.markdown('---')
 
 
