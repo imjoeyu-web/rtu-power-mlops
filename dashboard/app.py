@@ -77,7 +77,7 @@ submission['id'] = pd.to_datetime(submission['id'])
 
 fig, ax = plt.subplots(figsize=(14, 4))
 ax.plot(submission['id'], submission['hourly_pow'],
-        color='tomato', linewidth=0.8, label='May Prediction')
+        color='steelblue', linewidth=0.8, label='May Prediction')
 ax.set_xlabel('Date')
 ax.set_ylabel('hourly_pow (kW)')
 ax.legend()
@@ -112,7 +112,12 @@ with col_a:
 
 with col_b:
     st.markdown('**Isolation Forest**')
-    iso_anomalies = anomaly[anomaly['iso_anomaly'] == True]
+    iso_surge = iso_anomalies[iso_anomalies['hourly_pow'] > anomaly['hourly_pow'].mean()]
+    iso_drop  = iso_anomalies[iso_anomalies['hourly_pow'] <= anomaly['hourly_pow'].mean()]
+    ax3.scatter(iso_surge['dt'], iso_surge['hourly_pow'],
+                color='crimson', s=15, zorder=5, label=f'급등 ({len(iso_surge)}건)')
+    ax3.scatter(iso_drop['dt'], iso_drop['hourly_pow'],
+                color='navy', s=15, zorder=5, label=f'급락 ({len(iso_drop)}건)')
     fig3, ax3 = plt.subplots(figsize=(7, 3))
     ax3.plot(anomaly['dt'], anomaly['hourly_pow'],
              color='steelblue', linewidth=0.5, label='hourly_pow')
@@ -128,7 +133,7 @@ st.markdown('---')
 
 # 설비별 이상탐지
 st.subheader('🔧 설비별 이상탐지 현황')
-st.caption('두 이상탐지 방법(Z-score · Isolation Forest)이 동시에 감지한 교집합만 표시 · 좌측 막대 클릭 시 우측 타임라인 연동')
+st.caption('두 이상탐지 방법(Z-score · Isolation Forest)이 동시에 감지한 교집합만 표시. 좌측 막대 클릭 시 우측 타임라인 연동')
 
 if not equip_anomaly.empty:
     equip_summary = (
@@ -183,7 +188,7 @@ if not equip_anomaly.empty:
         fig6.update_layout(
             showlegend=False,
             height=400,
-            title=f'{selected} · 시간별 전력 추이 및 이상 시점',
+            title=f'{selected}의 시간별 전력 추이 및 이상 시점',
             legend=dict(orientation='h', y=1.1)
         )
         st.plotly_chart(fig6, use_container_width=True)
