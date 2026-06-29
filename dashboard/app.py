@@ -186,7 +186,7 @@ if not equip_anomaly.empty:
         fig6.update_layout(
             showlegend=True,
             height=350,
-            title=f'{selected} · 시간별 전력 추이 및 이상 시점,
+            title=f'{selected} · 시간별 전력 추이 및 이상 시점',
             legend=dict(orientation='h', y=1.1)
         )
         st.plotly_chart(fig6, use_container_width=True)
