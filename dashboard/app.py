@@ -149,10 +149,7 @@ if not equip_anomaly.empty:
             x='anomaly_count',
             y='equipment',
             orientation='h',
-            color=equip_summary['anomaly_count'].apply(
-                lambda x: 'max' if x == equip_summary['anomaly_count'].max() else 'normal'
-            ),
-            color_discrete_map={'max': 'crimson', 'normal': 'steelblue'},
+            color_discrete_sequence=['steelblue'],
             text='anomaly_count'
         )
         fig5.update_layout(
@@ -160,7 +157,7 @@ if not equip_anomaly.empty:
             xaxis_title='이상 건수',
             yaxis_title='',
             yaxis=dict(autorange='reversed'),
-            height=400
+            height=350
         )
         fig5.update_traces(textposition='outside')
         selected_event = st.plotly_chart(fig5, use_container_width=True, on_select='rerun', key='equip_bar')
@@ -184,7 +181,7 @@ if not equip_anomaly.empty:
                          mode='markers', marker=dict(color='red', size=6),
                          name=f'이상 ({len(sel_anom)}건)')
         fig6.update_layout(
-            showlegend=True,
+            showlegend=False,
             height=400,
             title=f'{selected} · 시간별 전력 추이 및 이상 시점',
             legend=dict(orientation='h', y=1.1)
